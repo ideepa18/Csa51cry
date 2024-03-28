@@ -1,0 +1,46 @@
+def generate_key_stream(key, length):
+    key_stream = ""
+    key_index = 0
+    for i in range(length):
+        key_stream += key[key_index]
+        key_index = (key_index + 1) % len(key)
+    return key_stream
+
+def encrypt(text, key):
+    encrypted_text = ""
+    key_stream = generate_key_stream(key, len(text))
+    for i in range(len(text)):
+        shift = ord(key_stream[i]) - ord('a')  # Assuming the key consists of lowercase letters
+        if text[i].isalpha():
+            if text[i].islower():
+                encrypted_text += chr((ord(text[i]) - ord('a') + shift) % 26 + ord('a'))
+            else:
+                encrypted_text += chr((ord(text[i]) - ord('A') + shift) % 26 + ord('A'))
+        else:
+            encrypted_text += text[i]
+    return encrypted_text
+
+def decrypt(text, key):
+    decrypted_text = ""
+    key_stream = generate_key_stream(key, len(text))
+    for i in range(len(text)):
+        shift = ord(key_stream[i]) - ord('a')  # Assuming the key consists of lowercase letters
+        if text[i].isalpha():
+            if text[i].islower():
+                decrypted_text += chr((ord(text[i]) - ord('a') - shift + 26) % 26 + ord('a'))
+            else:
+                decrypted_text += chr((ord(text[i]) - ord('A') - shift + 26) % 26 + ord('A'))
+        else:
+            decrypted_text += text[i]
+    return decrypted_text
+
+def main():
+    key = input("Enter the key (only lowercase letters): ")
+    plaintext = input("Enter the plaintext: ")
+    encrypted_text = encrypt(plaintext, key)
+    print("Encrypted text:", encrypted_text)
+    decrypted_text = decrypt(encrypted_text, key)
+    print("Decrypted text:", decrypted_text)
+
+if __name__ == "__main__":
+    main()
